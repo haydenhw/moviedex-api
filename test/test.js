@@ -1,6 +1,6 @@
-const AppController = require("./AppController")
+const AppController = require("../apps/apps-controller")
 const httpMocks = require("node-mocks-http");
-let appData = require('./data');
+let appData = require('../apps/apps-data');
 
 
 
@@ -45,11 +45,4 @@ describe("AppController.getApps", () => {
     expect(res._getJSONData()[0].Genres).toEqual("Action")
     expect(res._getJSONData()[1].Genres).toEqual("Action")
   })
-
-
-
-
-
-
-
 })

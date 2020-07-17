@@ -1,4 +1,4 @@
-let appData = require('./data');
+let appData = require('./apps-data');
 
 const sendErrorResponse = (res, err) => {
   return res.status(400).send(err).end();
