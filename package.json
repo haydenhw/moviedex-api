@@ -9,6 +9,7 @@
     "test": "jest --watchAll"
   },
   "devDependencies": {
-    "node-mocks-http": "^1.8.1"
+    "node-mocks-http": "^1.8.1",
+    "supertest": "^4.0.2"
   }
 }
