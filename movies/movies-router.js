@@ -5,10 +5,8 @@ const controller = require('./movies-controller');
 
 router.get('/',
   controller.validateRequest,
-  controller.filterMoviesByGenre,
-  controller.filterMoviesByCountry,
-  controller.filterMoviesByRating,
-  controller.getMovies,
+  controller.getAllMoviesIfNoFilterSupplied,
+  controller.getFilteredMovies,
 );
 
 module.exports = router;

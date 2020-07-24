@@ -1,69 +1,37 @@
-const movieList = require('./movies-data.json');
+const MovieUtil = require('./movies-utils');
 
-const filterByGenre = (movies, genre) => {
-  return movies.filter(movie => {
-    return movie.genre.toLowerCase().includes(genre)
-  })
-}
-
-const filterByCountry = (movies, country) => {
-  return movies.filter(movie => {
-    return movie.country.toLowerCase().includes(country)
-  })
-}
-
-const filterByRating = (movies, rating) => {
-  return movies.filter(movie => {
-    return movie.avg_vote >= +rating
-  })
-}
-
-
-exports.filterMoviesByGenre = (req, res, next) => {
-  const { genre  } = req.query
-  let movies = movieList
-
-  if (!genre) {
-    req.movies = movies
+module.exports.getAllMoviesIfNoFilterSupplied = (req, res, next) => {
+  const { genre, country, avg_vote } = req.query;
+  if (genre || country || avg_vote) {
     next()
+  } else {
+    const movieList = MovieUtil.getMovieData(process.env.NODE_ENV)
+    return res.json(movieList)
   }
-
-  movies = filterByGenre(movies, genre)
-  req.movies = movies
-  next();
 }
 
-exports.filterMoviesByCountry = (req, res, next) => {
-  const { country  } = req.query
+ module.exports.getFilteredMovies = (req, res) => {
+   const { genre, country, avg_vote } = req.query;
+   let movies = MovieUtil.getMovieData(process.env.NODE_ENV)
 
-  if (!country) {
-    next()
-  }
+   if (genre) {
+      movies = MovieUtil.filterByGenre(movies, genre)
+   }
 
-  req.movies = filterByCountry(movies, country)
-  next();
+   if (country) {
+     movies = MovieUtil.filterByCountry(movies, country)
+   }
+
+   if (avg_vote) {
+     movies = MovieUtil.filterByRating(movies, avg_vote)
+   }
+
+   return res.json(movies)
 }
 
-exports.filterMoviesByRating = (req, res, next) => {
-  const { avg_vote } = req.query
-
-  if (!avg_vote) {
-    next()
-  }
-
-  req.movies = filterByRating(movies, avg_vote)
-  next();
-}
-
-exports.getMovies = (req, res) => {
-  res.status(200).json(req.movies);
-}
-
-exports.validateRequest = (req, res, next) => {
-  const apiToken = proccess.env.API_TOKEN;
+module.exports.validateRequest = (req, res, next) => {
   const requestToken = req.get('Authorization')
-
-  if (requestToken !== apiToken) {
+  if (requestToken !== process.env.API_TOKEN) {
     return res.status(401).send('Authorization failed')
   }
 
